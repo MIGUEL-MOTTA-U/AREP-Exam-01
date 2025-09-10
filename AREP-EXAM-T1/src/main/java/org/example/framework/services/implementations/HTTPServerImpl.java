@@ -56,10 +56,10 @@ public class HTTPServerImpl {
         for(Number n: NUMBERS_LIST) {
             sum+= n.longValue();
         }
-        return (1 / NUMBERS_LIST.size() * sum);
+        return ((sum / NUMBERS_LIST.size()));
     }
     private static Number calculateCount(){
-        return 3;
+        return NUMBERS_LIST.size();
     }
 
     private static Number calculateSTDDEV(){
