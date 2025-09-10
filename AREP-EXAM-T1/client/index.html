@@ -9,23 +9,30 @@
 
 <body>
 <h1>Form with GET</h1>
-<form action="/hello">
-    <label for="name">Name:</label><br>
-    <input type="text" id="name" name="name" value="John"><br><br>
+<form action="/add">
+    <label for="name">Value to add the list:</label><br>
+    <input type="text" id="name" name="name" value="10"><br><br>
     <input type="button" value="Submit" onclick="loadGetMsg()">
 </form>
 <div id="getrespmsg"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
 
 <script>
     function loadGetMsg() {
-        let nameVar = document.getElementById("name").value;
-        const xhttp = new XMLHttpRequest();
-        xhttp.onload = function () {
-            document.getElementById("getrespmsg").innerHTML =
-                this.responseText;
-        }
-        xhttp.open("GET", "/hello?name=" + nameVar);
-        xhttp.send();
+    let nameVar = document.getElementById("name").value;
+   $.ajax({
+     url: "http://localhost:9001/add?x="+nameVar,
+     beforeSend: function( xhr ) {
+        xhr.setRequestHeader('Access-Control-Allow-Origin', '*');
+       xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
+     }
+   })
+     .done(function( data ) {
+       if ( console && console.log ) {
+         console.log( "Sample of data:", data.slice( 0, 100 ) );
+       }
+     });
     }
 </script>
 
