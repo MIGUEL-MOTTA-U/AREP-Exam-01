@@ -4,8 +4,10 @@ import org.example.framework.errors.FrameworkError;
 import org.example.framework.services.interfaces.HTTPRequest;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,43 +15,19 @@ import java.util.Map;
 public class ProxyServerImpl {
 
     private static boolean running = false;
+    private static final String USER_AGENT = "Mozilla/5.0";
+    private static final String GET_URL = "http://localhost:9000";
 
     public static void stop(){
         running = false;
     }
 
-    private static void handleListRequest(OutputStreamWriter out, BufferedOutputStream dataOut) throws IOException {
-        out.write(getHeader(200, "application/json"));
-        Map<String, String> fields = Map.of("status","OK","values",NUMBERS_LIST.toString());
-        out.write(getJSON(fields));
-    }
-
-    private static void handleStatsRequest(OutputStreamWriter out, BufferedOutputStream dataOut) throws IOException {
-        Map<String, String> fields;
-        out.write(getHeader(200, "application/json"));
-        if (NUMBERS_LIST.isEmpty()) {
-            fields = Map.of("status", "ERR", "error", "empty_list");
-        } else {
-            fields = Map.of("status","OK","mean",String.valueOf(calculateMean()), "stddev",String.valueOf(calculateSTDDEV()), "count",String.valueOf(calculateCount()));
-        }
-        out.write(getJSON(fields));
-    }
-    private static void handleDynamicRoute(String path, OutputStreamWriter out, BufferedOutputStream dataOutput) throws IOException {
-        //add?x=<real>
-        // TODO --> Aqui estoy asumiendo que me va a solicitar solo add, esto debe refactorizarse
-        String number = path.substring(7);
-        Number parsedNumber = Long.valueOf(number);
-        NUMBERS_LIST.add(parsedNumber);
-        out.write(getHeader(200, "application/json"));
-        Map<String, String> fields = Map.of("status","OK","added",number,"count",String.valueOf(NUMBERS_LIST.size()));
-        out.write(getJSON(fields));
-    }
 
 
 
-    private static Number calculateSTDDEV(){
-        return 3.2071349027;
-    }
+
+
+
 
 
 
@@ -117,7 +95,17 @@ public class ProxyServerImpl {
     }
 
     private static void handleRoute(String path, OutputStreamWriter out, BufferedOutputStream dataOutput) throws Exception {
+        String redirect = null;
+        switch (path){
+            case "/list":
 
+            case "/clear":
+                break;
+            case "/stats":
+                break;
+            case "/cliente":
+                break;
+        }
     }
 
     private static String getJSON(Map<String, String> fields) {
@@ -147,5 +135,11 @@ public class ProxyServerImpl {
 
         "\r\n";
     }
+
+
+
+
+
+
 
 }
