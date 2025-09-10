@@ -178,6 +178,10 @@ public class HTTPServerImpl {
     private static String getHeader(int code, String contentType) {
         return "HTTP/1.1 "+code+" OK\r\n"+
                 "Content-Type: "+contentType+"\r\n"+
+                "Access-Control-Allow-Credentials:true"+"\r\n"+
+                "Access-Control-Allow-Methods:GET"+"\r\n"+
+                "Access-Control-Allow-Origin:*"+"\r\n"+
+
                 "\r\n";
     }
 
