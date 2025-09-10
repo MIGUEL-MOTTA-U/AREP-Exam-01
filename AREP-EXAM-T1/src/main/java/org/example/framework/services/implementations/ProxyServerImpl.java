@@ -13,11 +13,6 @@ import java.util.Map;
 public class ProxyServerImpl {
 
     private static boolean running = false;
-    private static final List<Number> NUMBERS_LIST = new ArrayList<>();//List.of(3.5, 2.0, 10);//
-    private static Map<String, HTTPRequest> registeredRoutes = Map.of(
-            "/list",(path, out, outData) -> {handleListRequest(out, outData);},
-            "/clear",(path, out, outData) -> {handleClearRequest(out,outData);},
-            "/stats", (path, out, outData) -> {handleStatsRequest(out,outData);}) ;
 
     public static void stop(){
         running = false;
@@ -51,27 +46,11 @@ public class ProxyServerImpl {
     }
 
 
-    private static Number calculateMean(){
-        Long sum = 0L;
-        for(Number n: NUMBERS_LIST) {
-            sum+= n.longValue();
-        }
-        return ((sum / NUMBERS_LIST.size()));
-    }
-    private static Number calculateCount(){
-        return NUMBERS_LIST.size();
-    }
 
     private static Number calculateSTDDEV(){
         return 3.2071349027;
     }
 
-    private static void handleClearRequest(OutputStreamWriter out, BufferedOutputStream dataOut) throws IOException {
-        NUMBERS_LIST.clear();
-        out.write(getHeader(200, "application/json"));
-        Map<String, String> fields = Map.of("status","OK","message","list_cleared");
-        out.write(getJSON(fields));
-    }
 
 
     public static void start(int port) {
@@ -138,23 +117,7 @@ public class ProxyServerImpl {
     }
 
     private static void handleRoute(String path, OutputStreamWriter out, BufferedOutputStream dataOutput) throws Exception {
-        validateRoute(path);
-        if (dynamicRoute(path)){
-            handleDynamicRoute(path, out, dataOutput);
-            return;
-        }
-        if (!registeredRoutes.containsKey(path)) throw new FrameworkError("Not Found", 404);
-        registeredRoutes.get(path).handleRequest(path, out, dataOutput);
-    }
 
-
-
-    private static boolean dynamicRoute(String path) {
-        return path.contains("?");
-    }
-
-    private static void validateRoute(String path){
-        // TODO Validation to avoid CSS in requests
     }
 
     private static String getJSON(Map<String, String> fields) {
@@ -185,9 +148,4 @@ public class ProxyServerImpl {
         "\r\n";
     }
 
-    private static String getHeader(int code, String contentType, String message) {
-        return "HTTP/1.1 "+code+" " +message+"\r\n"+
-                "Content-Type: "+contentType+"\r\n"+
-                "\r\n";
-    }
 }
